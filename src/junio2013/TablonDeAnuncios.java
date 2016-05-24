@@ -44,15 +44,19 @@ public class TablonDeAnuncios {
 		if (anuncio.anunciante_.equals("LA EMPRESA"))
 			listaDeAnuncios_.add(anuncio);
 		else {
-			if ((bdAnunciantes.buscarAnunciante(anuncio.anunciante_))
-					&& (bdPagos.anuncianteTieneSaldo(anuncio.anunciante_))) {
-				Anuncio esteAnuncio = buscarAnuncioPorTitulo(anuncio.titulo_);
-				if (esteAnuncio == null || !(esteAnuncio.anunciante_.equals(anuncio.anunciante_))) {
-					listaDeAnuncios_.add(anuncio);
-					bdPagos.anuncioPublicado(anuncio.anunciante_);
+			if (bdAnunciantes.buscarAnunciante(anuncio.anunciante_)) {
+				if (bdPagos.anuncianteTieneSaldo(anuncio.anunciante_)) {
+					Anuncio esteAnuncio = buscarAnuncioPorTitulo(anuncio.titulo_);
+					if (esteAnuncio == null || !(esteAnuncio.anunciante_.equals(anuncio.anunciante_))) {
+						listaDeAnuncios_.add(anuncio);
+						bdPagos.anuncioPublicado(anuncio.anunciante_);
+					}
 				}
-			}
+			}else{
+				throw new AnuncianteNoExisteException();
 		}
+	}
+
 	}
 
 	/**
