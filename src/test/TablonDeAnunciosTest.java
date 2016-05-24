@@ -75,7 +75,7 @@ public class TablonDeAnunciosTest {
 	public void publicarDosAnunciosDeLAEMPRESAbuscarElSegundoPorTituloYComprobarQueElTamannoDelTablonNoAumenta() {
 
 		anuncio_ = new Anuncio("Titulo", "Cuerpo del mensaje", "LA EMPRESA");
-		tablon_.publicarAnuncio(anuncio_, bdAnunciantes, bdPagos);
+		tablon_.publicarAnuncio(anuncio_, null, null);
 		int numAnunciosDespuesDelPrimero = tablon_.anunciosPublicados();
 
 		anuncio_ = new Anuncio("Titulo2", "Cuerpo del mensaje2", "LA EMPRESA");
@@ -99,4 +99,17 @@ public class TablonDeAnunciosTest {
 		assertNotEquals("El anuncio no se ha borrado", primerAnuncio, (tablon_.buscarAnuncioPorTitulo("Titulo")));
 	}
 
+	@Test
+	public void noSeDebePoderPublicarMasDeUnAnuncioConElMismoTituloYDelMismoAnunciante() {
+		when(bdAnunciantes.buscarAnunciante("MIL ANUNCIOS")).thenReturn(true);
+		when(bdPagos.anuncianteTieneSaldo("MIL ANUNCIOS")).thenReturn(true);
+
+		anuncio_ = new Anuncio("Titulo", "Cuerpo del mensaje", "MIL ANUNCIOS");
+		tablon_.publicarAnuncio(anuncio_, bdAnunciantes, bdPagos);
+		tablon_.publicarAnuncio(anuncio_, bdAnunciantes, bdPagos);
+
+		verify(bdAnunciantes, times(2)).buscarAnunciante("MIL ANUNCIOS");
+		verify(bdPagos, times(2)).anuncianteTieneSaldo("MIL ANUNCIOS");
+		verify(bdPagos).anuncioPublicado("MIL ANUNCIOS");
+	}
 }
