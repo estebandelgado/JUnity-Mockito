@@ -86,4 +86,17 @@ public class TablonDeAnunciosTest {
 				numAnunciosDespuesDelPrimero);
 	}
 
+	@Test
+	public void comprobarQueAlPublicarDosAnunciosDelMismoAnuncianteElPrimeroSeBorraCorrectamente() {
+		Anuncio primerAnuncio = new Anuncio("Titulo", "Cuerpo del mensaje", "LA EMPRESA");
+		tablon_.publicarAnuncio(primerAnuncio, bdAnunciantes, bdPagos);
+
+		anuncio_ = new Anuncio("Titulo2", "Cuerpo del mensaje2", "LA EMPRESA");
+		tablon_.publicarAnuncio(anuncio_, null, null);
+
+		tablon_.borrarAnuncio("Titulo", "LA EMPRESA");
+
+		assertNotEquals("El anuncio no se ha borrado", primerAnuncio, (tablon_.buscarAnuncioPorTitulo("Titulo")));
+	}
+
 }
