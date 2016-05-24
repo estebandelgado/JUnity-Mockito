@@ -112,4 +112,16 @@ public class TablonDeAnunciosTest {
 		verify(bdPagos, times(2)).anuncianteTieneSaldo("MIL ANUNCIOS");
 		verify(bdPagos).anuncioPublicado("MIL ANUNCIOS");
 	}
+	
+	@Test(expected = AnuncianteNoExisteException.class)
+	public void elevarExcepcion_AnuncianteNoExisteException_CuandoNoExistaAnunciante(){
+		when(bdAnunciantes.buscarAnunciante("MIL ANUNCIOS")).thenReturn(false);
+		when(bdPagos.anuncianteTieneSaldo("MIL ANUNCIOS")).thenReturn(true);
+		
+		anuncio_ = new Anuncio("Titulo", "Cuerpo del mensaje", "MIL ANUNCIOS");
+		tablon_.publicarAnuncio(anuncio_, bdAnunciantes, bdPagos);
+		
+		verify(bdAnunciantes).buscarAnunciante("MIL ANUNCIOS");
+		verify(bdPagos, never()).anuncianteTieneSaldo("MIL ANUNCIOS");
+	}
 }
